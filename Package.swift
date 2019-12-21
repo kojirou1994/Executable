@@ -10,7 +10,7 @@ let package = Package(
             targets: ["Executable"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.0.1")
+        .package(url: "https://github.com/apple/swift-tools-support-core.git", .branch("master"))
     ],
     targets: [
         .target(
