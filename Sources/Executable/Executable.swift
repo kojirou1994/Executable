@@ -87,6 +87,22 @@ extension Executable {
     }
     
 }
+
+extension Executable {
+
+    @inlinable
+    public func eraseToAnyExecutable() -> AnyExecutable {
+        var e = AnyExecutable(executableName: executableName, arguments: arguments)
+        e.executableURL = executableURL
+        e.environment = environment
+        e.standardInput = standardInput
+        e.standardOutput = standardOutput
+        e.standardError = standardError
+        e.currentDirectoryURL = currentDirectoryURL
+        return e
+    }
+
+}
 /*
 public class ProcessOperation: Operation {
     

@@ -1,7 +1,7 @@
 import struct Foundation.URL
 
 public struct AnyExecutable: Executable {
-    public static var executableName: String {fatalError()}
+    public static var executableName: String { fatalError("Should not be used.") }
 
     public init(executableName: String, arguments: [String]) {
         self.executableName = executableName
@@ -9,7 +9,7 @@ public struct AnyExecutable: Executable {
     }
 
     public init(executableURL: URL, arguments: [String]) {
-        self.executableName = .init()
+        self.executableName = executableURL.lastPathComponent
         self.executableURL = executableURL
         self.arguments = arguments
     }
@@ -28,6 +28,6 @@ public struct AnyExecutable: Executable {
 
     public var currentDirectoryURL: URL?
 
-    public let arguments: [String]
+    public var arguments: [String]
 
 }

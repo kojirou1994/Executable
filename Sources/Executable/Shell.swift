@@ -1,5 +1,5 @@
 import Foundation
-
+/*
 @dynamicMemberLookup
 public struct Shell {
     
@@ -130,3 +130,4 @@ public struct LaunchResult {
         return process.terminationStatus
     }
 }
+*/
