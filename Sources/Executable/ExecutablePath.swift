@@ -8,19 +8,29 @@ public struct ExecutablePath {
         ExecutablePath.PATHs = path.split(separator: ":")
     }
 
-    private static var customLookup: ((String) throws -> String?)?
+    public static func add(_ path: String, toHead: Bool = true) {
+        let paths = path.split(separator: ":")
+        if toHead {
+            Self.PATHs.insert(contentsOf: paths, at: 0)
+        } else {
+            Self.PATHs.append(contentsOf: paths)
+        }
+    }
 
-    public static func set(_ lookupMethod: ((String) throws -> String?)?) {
+    public typealias LookupMethod = (String) throws -> String?
+
+    private static var customLookup: LookupMethod?
+
+    public static func set(_ lookupMethod: LookupMethod?) {
         Self.customLookup = lookupMethod
     }
 
-    internal static func lookup(_ executable: String, customPaths: [Substring]? = nil) throws -> String {
+    @discardableResult
+    public static func lookup(_ executable: String, customPaths: [Substring]? = nil) throws -> String {
         assert(!executable.isEmpty)
         if let customLookup = Self.customLookup {
             if let result = try customLookup(executable) {
                 return result
-            } else {
-//                throw ExecutableError.executableNotFound(executable)
             }
         }
         let paths: [Substring]

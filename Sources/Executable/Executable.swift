@@ -13,10 +13,12 @@ public enum ExecutableLaunchMode {
     case tsc
 }
 
+// only work for Foundation framework
 public enum ExecutableStandardStream {
     case fileHandle(FileHandle)
     case pipe(Pipe)
 
+    @inlinable
     var valueForProcess: Any {
         switch self {
         case .fileHandle(let f):
@@ -35,15 +37,6 @@ public protocol Executable: CustomStringConvertible {
 
     var environment: [String : String]? {get}
 
-    /// only work in foundation mode
-    var standardInput: ExecutableStandardStream? {get}
-
-    /// only work in foundation mode
-    var standardOutput: ExecutableStandardStream? {get}
-
-    /// only work in foundation mode
-    var standardError: ExecutableStandardStream? {get}
-
     var currentDirectoryURL: URL? {get}
 
     var executableName: String {get}
@@ -60,12 +53,6 @@ extension Executable {
     public var executableURL: URL? {nil}
 
     public var environment: [String : String]? {nil}
-
-    public var standardInput: ExecutableStandardStream? {nil}
-
-    public var standardOutput: ExecutableStandardStream? {nil}
-
-    public var standardError: ExecutableStandardStream? {nil}
 
     /// only work in foundation mode
     public var currentDirectoryURL: URL? {nil}
@@ -95,9 +82,6 @@ extension Executable {
         var e = AnyExecutable(executableName: executableName, arguments: arguments)
         e.executableURL = executableURL
         e.environment = environment
-        e.standardInput = standardInput
-        e.standardOutput = standardOutput
-        e.standardError = standardError
         e.currentDirectoryURL = currentDirectoryURL
         return e
     }

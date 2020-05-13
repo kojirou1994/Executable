@@ -1,7 +1,11 @@
 import Foundation
 
 extension Executable {
-    public func generateFoundationProcess() throws -> Process {
+    public func generateFoundationProcess(
+        standardInput: ExecutableStandardStream? = nil,
+        standardOutput: ExecutableStandardStream? = nil,
+        standardError: ExecutableStandardStream? = nil
+    ) throws -> Process {
         let process = Process()
         if let executableURL = self.executableURL {
             // provied url
@@ -33,13 +37,13 @@ extension Executable {
         if let environment = self.environment {
             process.environment = environment
         }
-        if let standardInput = self.standardInput?.valueForProcess {
+        if let standardInput = standardInput?.valueForProcess {
             process.standardInput = standardInput
         }
-        if let standardOutput = self.standardOutput?.valueForProcess {
+        if let standardOutput = standardOutput?.valueForProcess {
             process.standardOutput = standardOutput
         }
-        if let standardError = self.standardError?.valueForProcess {
+        if let standardError = standardError?.valueForProcess {
             process.standardError = standardError
         }
         if let currentDirectoryURL = self.currentDirectoryURL {

@@ -20,12 +20,6 @@ public struct AnyExecutable: Executable {
 
     public var environment: [String : String]?
 
-    public var standardInput: ExecutableStandardStream?
-
-    public var standardOutput: ExecutableStandardStream?
-
-    public var standardError: ExecutableStandardStream?
-
     public var currentDirectoryURL: URL?
 
     public var arguments: [String]
