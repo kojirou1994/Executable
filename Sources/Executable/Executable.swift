@@ -3,14 +3,7 @@ import Foundation
 public enum ExecutableError: Error {
   case pathNull
   case executableNotFound(String)
-  case foundationNonZeroExit(Int32)
-  case tscNonZeroExit(TSCExitStatus)
-}
-
-public enum ExecutableLaunchMode {
-  case foundation
-  /// swift-tools-support-core
-  case tsc
+  case nonZeroExit(TSCExitStatus)
 }
 
 // only work for Foundation framework
@@ -37,13 +30,12 @@ public protocol Executable: CustomStringConvertible {
 
   var environment: [String : String]? {get}
 
+  /// Working Directory
   var currentDirectoryURL: URL? {get}
 
   var executableName: String {get}
 
   var executableURL: URL? {get}
-
-  var launchMode: ExecutableLaunchMode {get}
 }
 
 extension Executable {
@@ -54,10 +46,7 @@ extension Executable {
 
   public var environment: [String : String]? {nil}
 
-  /// only work in foundation mode
   public var currentDirectoryURL: URL? {nil}
-
-  public var launchMode: ExecutableLaunchMode { .tsc }
 
   public func checkValid() throws {
     if executableURL == nil {

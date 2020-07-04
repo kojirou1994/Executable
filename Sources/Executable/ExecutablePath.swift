@@ -4,7 +4,7 @@ public struct ExecutablePath {
   
   private static var PATHs = ProcessInfo.processInfo.environment["PATH", default: ""].split(separator: ":")
   
-  public static func set(_ path: String) {
+  public static func set(path: String) {
     ExecutablePath.PATHs = path.split(separator: ":")
   }
   
@@ -21,7 +21,7 @@ public struct ExecutablePath {
   
   private static var customLookup: LookupMethod?
   
-  public static func set(_ lookupMethod: LookupMethod?) {
+  public static func set(lookupMethod: LookupMethod?) {
     Self.customLookup = lookupMethod
   }
   

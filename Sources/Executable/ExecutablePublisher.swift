@@ -57,7 +57,7 @@ public struct ExecutablePublisher<E: Executable>: Publisher {
   
   public func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
     autoreleasepool {
-      let process = try! executable.generateFoundationProcess()
+      let process = try! executable.generateProcess(use: FoundationExecutableLauncher())
       let subscription = ProcessPublisherSubscription(process: process)
       
       var catchedPipes = [Pipe]()

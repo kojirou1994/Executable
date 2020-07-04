@@ -1,19 +1,33 @@
 import XCTest
-@testable import Executable
+import Executable
 
 final class ExecutableTests: XCTestCase {
-    func testCombine() {
-
+  func testError() throws {
+    do {
+      let none = AnyExecutable(executableName: "abcdefg", arguments: [])
+      try none.launch(use: SwiftToolsSupportExecutableLauncher(outputRedirection: .none))
+    } catch let error as ExecutableError {
+      switch error {
+      case .executableNotFound(_): break
+      case .nonZeroExit(_): break
+      case .pathNull: break
+      }
     }
+  }
 
-    func testCheckValid() {
-        let valid = AnyExecutable(executableName: "bash", arguments: [])
-        XCTAssertNoThrow(try valid.checkValid())
-        let invalid = AnyExecutable(executableName: "hsab", arguments: [])
-        XCTAssertThrowsError(try invalid.checkValid())
-    }
+  func testCheckValid() throws {
+    let valid = AnyExecutable(executableName: "bash", arguments: [])
+    XCTAssertNoThrow(try valid.checkValid())
+    let invalid = AnyExecutable(executableName: "hsab", arguments: [])
+    XCTAssertThrowsError(try invalid.checkValid())
+    try ExecutablePath.lookup("ffmpeg")
+  }
 
-    static var allTests = [
-        ("testCombine", testCombine),
-    ]
+  func testFoundationLauncher() throws {
+    let curl = AnyExecutable(executableName: "curl", arguments: ["--version"])
+
+    try curl.launch(use: FoundationExecutableLauncher())
+
+    try curl.launch(use: FoundationExecutableLauncher(standardInput: nil, standardOutput: .fileHandle(.nullDevice), standardError: .fileHandle(.nullDevice)))
+  }
 }
