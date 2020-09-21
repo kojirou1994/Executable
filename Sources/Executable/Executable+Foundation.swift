@@ -35,9 +35,11 @@ public struct FoundationExecutableLauncher: ExecutableLauncher {
         throw ExecutableError.nonZeroExit(.terminated(code: process.terminationStatus))
       case .uncaughtSignal:
         throw ExecutableError.nonZeroExit(.signalled(signal: process.terminationStatus))
+      #if os(macOS)
       @unknown default:
         assertionFailure("Unknown terminationReason!")
         throw ExecutableError.nonZeroExit(.terminated(code: process.terminationStatus))
+      #endif
       }
     }
     return .init(terminationStatus: process.terminationStatus, terminationReason: process.terminationReason)
