@@ -33,8 +33,10 @@ public protocol Executable: CustomStringConvertible {
   /// Working Directory
   var currentDirectoryURL: URL? {get}
 
-  var executableName: String {get}
+  /// Override static executableName
+  var executableName: String { get }
 
+  /// Specify the executable file's URL
   var executableURL: URL? {get}
 }
 
@@ -42,7 +44,7 @@ extension Executable {
 
   public var executableName: String { Self.executableName }
 
-  public var executableURL: URL? {nil}
+  public var executableURL: URL? { nil }
 
   public var environment: [String : String]? {nil}
 
@@ -54,12 +56,24 @@ extension Executable {
     }
   }
 
+  public static func checkValid() throws {
+    _ = try ExecutablePath.lookup(executableName)
+  }
+
   public var description: String {
     "CommandLine: \(executableName) \(arguments.joined(separator: " "))"
   }
 
   public var commandLineArguments: [String] {
-    CollectionOfOne(executableName) + arguments
+    var result = [executableName.spm_shellEscaped()]
+    let cachedArgs = arguments
+    result.reserveCapacity(cachedArgs.count)
+    cachedArgs.forEach { result.append($0.spm_shellEscaped()) }
+    return result
+  }
+
+  public var shellCommand: String {
+    commandLineArguments.joined(separator: " ")
   }
 
 }
