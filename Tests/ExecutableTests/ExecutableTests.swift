@@ -5,7 +5,7 @@ final class ExecutableTests: XCTestCase {
   func testError() throws {
     do {
       let none = AnyExecutable(executableName: "abcdefg", arguments: [])
-      try none.launch(use: SwiftToolsSupportExecutableLauncher(outputRedirection: .none))
+      try none.launch(use: TSCExecutableLauncher(outputRedirection: .none))
     } catch let error as ExecutableError {
       switch error {
       case .executableNotFound(_): break

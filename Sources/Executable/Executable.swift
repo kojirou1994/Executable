@@ -4,6 +4,7 @@ public enum ExecutableError: Error {
   case pathNull
   case executableNotFound(String)
   case nonZeroExit(TSCExitStatus)
+  case invalidExecutableURL(URL)
 }
 
 // only work for Foundation framework
@@ -51,7 +52,11 @@ extension Executable {
   public var currentDirectoryURL: URL? {nil}
 
   public func checkValid() throws {
-    if executableURL == nil {
+    if let fileURL = executableURL {
+      if !FileManager.default.isExecutableFile(atPath: fileURL.path) {
+        throw ExecutableError.invalidExecutableURL(fileURL)
+      }
+    } else {
       _ = try ExecutablePath.lookup(executableName)
     }
   }

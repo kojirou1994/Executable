@@ -1,6 +1,9 @@
 import TSCBasic
 
-public struct SwiftToolsSupportExecutableLauncher: ExecutableLauncher {
+@available(*, deprecated, renamed: "TSCExecutableLauncher")
+public typealias SwiftToolsSupportExecutableLauncher = TSCExecutableLauncher
+
+public struct TSCExecutableLauncher: ExecutableLauncher {
 
   public let outputRedirection: Process.OutputRedirection
   public let startNewProcessGroup: Bool
