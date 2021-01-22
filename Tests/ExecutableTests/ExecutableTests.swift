@@ -20,7 +20,6 @@ final class ExecutableTests: XCTestCase {
     XCTAssertNoThrow(try valid.checkValid())
     let invalid = AnyExecutable(executableName: "hsab", arguments: [])
     XCTAssertThrowsError(try invalid.checkValid())
-    try ExecutablePath.lookup("ffmpeg")
   }
 
   func testFoundationLauncher() throws {
