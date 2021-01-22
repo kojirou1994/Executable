@@ -15,15 +15,7 @@ public struct FoundationExecutableLauncher: ExecutableLauncher {
 
   public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> LaunchResult where T : Executable {
     let process = try generateProcess(for: executable)
-    #if os(macOS)
-    if #available(OSX 10.13, *) {
-      try process.run()
-    } else {
-      process.launch()
-    }
-    #else
     try process.run()
-    #endif
 
     while process.isRunning {
       Thread.sleep(forTimeInterval: 0.05)
@@ -47,30 +39,8 @@ public struct FoundationExecutableLauncher: ExecutableLauncher {
 
   public func generateProcess<T>(for executable: T) throws -> Process where T : Executable {
     let process = Process()
-    if let executableURL = executable.executableURL {
-      #if os(macOS)
-      if #available(OSX 10.13, *) {
-        process.executableURL = executableURL
-      } else {
-        process.launchPath = executableURL.path
-      }
-      #else
-      process.executableURL = executableURL
-      #endif
-    } else {
-      // search in PATH
-      let launchPath = try ExecutablePath.lookup(executable.executableName)
-      let executableURL = URL(fileURLWithPath: launchPath)
-      #if os(macOS)
-      if #available(OSX 10.13, *) {
-        process.executableURL = executableURL
-      } else {
-        process.launchPath = launchPath
-      }
-      #else
-      process.executableURL = executableURL
-      #endif
-    }
+    // use provided exe url, or search in PATH
+    process.executableURL = try executable.executableURL ?? URL(fileURLWithPath: ExecutablePath.lookup(executable))
 
     process.arguments = executable.arguments
     if let environment = executable.environment {
@@ -86,15 +56,7 @@ public struct FoundationExecutableLauncher: ExecutableLauncher {
       process.standardError = standardError
     }
     if let currentDirectoryURL = executable.currentDirectoryURL {
-      #if os(macOS)
-      if #available(OSX 10.13, *) {
-        process.currentDirectoryURL = currentDirectoryURL
-      } else {
-        process.currentDirectoryPath = currentDirectoryURL.path
-      }
-      #else
       process.currentDirectoryURL = currentDirectoryURL
-      #endif
     }
     return process
   }

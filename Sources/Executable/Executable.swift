@@ -1,7 +1,6 @@
 import Foundation
 
 public enum ExecutableError: Error {
-  case pathNull
   case executableNotFound(String)
   case nonZeroExit(TSCExitStatus)
   case invalidExecutableURL(URL)
@@ -23,22 +22,26 @@ public enum ExecutableStandardStream {
   }
 }
 
-public protocol Executable: CustomStringConvertible {
+public protocol Executable: CustomStringConvertible where AlternativeExecutableNames.Element == String {
 
-  static var executableName: String {get}
+  static var executableName: String { get }
 
-  var arguments: [String] {get}
+  associatedtype AlternativeExecutableNames: Sequence = EmptyCollection<String>
 
-  var environment: [String : String]? {get}
+  static var alternativeExecutableNames: AlternativeExecutableNames { get }
+
+  var arguments: [String] { get }
+
+  var environment: [String : String]? { get }
 
   /// Working Directory
-  var currentDirectoryURL: URL? {get}
+  var currentDirectoryURL: URL? { get }
 
   /// Override static executableName
   var executableName: String { get }
 
   /// Specify the executable file's URL
-  var executableURL: URL? {get}
+  var executableURL: URL? { get }
 }
 
 extension Executable {
@@ -57,7 +60,7 @@ extension Executable {
         throw ExecutableError.invalidExecutableURL(fileURL)
       }
     } else {
-      _ = try ExecutablePath.lookup(executableName)
+      _ = try ExecutablePath.lookup(self)
     }
   }
 
@@ -94,4 +97,8 @@ extension Executable {
     return e
   }
 
+}
+
+public extension Executable where AlternativeExecutableNames == EmptyCollection<String> {
+  static var alternativeExecutableNames: AlternativeExecutableNames { .init() }
 }

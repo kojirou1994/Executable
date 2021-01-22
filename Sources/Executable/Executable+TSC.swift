@@ -14,7 +14,7 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
   }
 
   public func generateProcess<T>(for executable: T) throws -> Process where T : Executable {
-    let launchPath = try executable.executableURL?.path ?? ExecutablePath.lookup(executable.executableName)
+    let launchPath = try executable.executableURL?.path ?? ExecutablePath.lookup(executable)
     let arguments = CollectionOfOne(launchPath) + executable.arguments
     let environment = executable.environment ?? ProcessEnv.vars
     

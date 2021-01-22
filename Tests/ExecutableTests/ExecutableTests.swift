@@ -10,7 +10,7 @@ final class ExecutableTests: XCTestCase {
       switch error {
       case .executableNotFound(_): break
       case .nonZeroExit(_): break
-      case .pathNull: break
+      case .invalidExecutableURL(_): break
       }
     }
   }
