@@ -26,8 +26,8 @@ final class ExecutableTests: XCTestCase {
   func testFoundationLauncher() throws {
     let curl = AnyExecutable(executableName: "curl", arguments: ["--version"])
 
-    try curl.launch(use: FoundationExecutableLauncher())
+    try curl.launch(use: FPExecutableLauncher())
 
-    try curl.launch(use: FoundationExecutableLauncher(standardInput: nil, standardOutput: .fileHandle(.nullDevice), standardError: .fileHandle(.nullDevice)))
+    try curl.launch(use: FPExecutableLauncher(standardInput: nil, standardOutput: .fileHandle(.nullDevice), standardError: .fileHandle(.nullDevice)))
   }
 }

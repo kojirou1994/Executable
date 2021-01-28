@@ -1,6 +1,10 @@
 import Foundation
 
-public struct FoundationExecutableLauncher: ExecutableLauncher {
+@available(*, deprecated, renamed: "FPExecutableLauncher")
+public typealias FoundationExecutableLauncher = FPExecutableLauncher
+
+/// This launcher use Foundation Process class.
+public struct FPExecutableLauncher: ExecutableLauncher {
   public let standardInput: ExecutableStandardStream?
   public let standardOutput: ExecutableStandardStream?
   public let standardError: ExecutableStandardStream?
