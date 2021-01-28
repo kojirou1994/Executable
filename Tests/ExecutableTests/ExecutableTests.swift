@@ -1,5 +1,6 @@
 import XCTest
-import Executable
+import ExecutableDescription
+import ExecutableLauncher
 
 final class ExecutableTests: XCTestCase {
   func testError() throws {
