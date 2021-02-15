@@ -30,4 +30,14 @@ final class ExecutableTests: XCTestCase {
 
     try curl.launch(use: FPExecutableLauncher(standardInput: nil, standardOutput: .fileHandle(.nullDevice), standardError: .fileHandle(.nullDevice)))
   }
+
+  func testContiguousPipeline() throws {
+    let pipeline = try ContiguousPipeline(AnyExecutable(executableName: "ps", arguments: ["aux"]))
+      .append(AnyExecutable(executableName: "grep", arguments: ["a"]))
+
+    try pipeline.run()
+    let output = pipeline.lastPipe.fileHandleForReading.readDataToEndOfFile()
+    pipeline.waitUntilExit()
+    XCTAssertFalse(output.isEmpty)
+  }
 }
