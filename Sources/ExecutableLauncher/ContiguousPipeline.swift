@@ -12,8 +12,10 @@ public final class ContiguousPipeline {
     processes = try [launcher.generateProcess(for: executable)]
   }
 
-  public func append<E: Executable>(_ newExecutable: E,
-                                    standardError: ExecutableStandardStream? = nil) throws -> Self {
+  @discardableResult
+  public func append<E: Executable>(
+    _ newExecutable: E,
+    standardError: ExecutableStandardStream? = nil) throws -> Self {
     let newPipe = Pipe()
     let launcher = FPExecutableLauncher(standardInput: .pipe(lastPipe), standardOutput: .pipe(newPipe), standardError: standardError)
     let newProcess = try launcher.generateProcess(for: newExecutable)
