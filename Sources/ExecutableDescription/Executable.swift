@@ -1,16 +1,12 @@
 import Foundation
 
-public protocol Executable: CustomStringConvertible
-where AlternativeExecutableNames: Sequence,
-      AlternativeExecutableNames.Element == String {
+public protocol Executable: CustomStringConvertible {
 
   /// Executable name, like curl, wget
   static var executableName: String { get }
 
-  associatedtype AlternativeExecutableNames = EmptyCollection<String>
-
   /// Alternative executable names, eg. ["gtar"]
-  static var alternativeExecutableNames: AlternativeExecutableNames { get }
+  static var alternativeExecutableNames: [String] { get }
 
   var arguments: [String] { get }
 
@@ -55,6 +51,6 @@ extension Executable {
 
 }
 
-public extension Executable where AlternativeExecutableNames == EmptyCollection<String> {
-  static var alternativeExecutableNames: AlternativeExecutableNames { .init() }
+public extension Executable {
+  static var alternativeExecutableNames: [String] { [] }
 }
