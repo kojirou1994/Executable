@@ -24,4 +24,6 @@ public struct AnyExecutable: Executable {
 
   public var arguments: [String]
 
+  public var alternativeExecutableNames: [String] = .init()
+
 }

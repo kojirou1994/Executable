@@ -8,6 +8,7 @@ public protocol Executable: CustomStringConvertible {
   /// Alternative executable names, eg. ["gtar"]
   static var alternativeExecutableNames: [String] { get }
 
+  /// executable arguments, not including executableName
   var arguments: [String] { get }
 
   var environment: [String : String]? { get }
@@ -17,6 +18,9 @@ public protocol Executable: CustomStringConvertible {
 
   /// Override static executableName
   var executableName: String { get }
+
+  /// Overwride static alternativeExecutableNames
+  var alternativeExecutableNames: [String] { get }
 
   /// Specify the executable file's URL
   var executableURL: URL? { get }
@@ -46,6 +50,7 @@ extension Executable {
     e.executableURL = executableURL
     e.environment = environment
     e.currentDirectoryURL = currentDirectoryURL
+    e.alternativeExecutableNames = alternativeExecutableNames
     return e
   }
 
@@ -53,4 +58,6 @@ extension Executable {
 
 public extension Executable {
   static var alternativeExecutableNames: [String] { [] }
+
+  var alternativeExecutableNames: [String] { Self.alternativeExecutableNames }
 }

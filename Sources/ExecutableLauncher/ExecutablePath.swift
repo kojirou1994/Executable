@@ -25,11 +25,23 @@ public struct ExecutablePath {
     Self.customLookup = lookupMethod
   }
 
+  public static func lookup<E: Executable>(_ executable: E.Type, overridePath: String? = nil) throws -> String {
+    if let result = try? lookup(E.executableName, overridePath: overridePath) {
+      return result
+    }
+    for executableName in E.alternativeExecutableNames {
+      if let result = try? lookup(executableName, overridePath: overridePath) {
+        return result
+      }
+    }
+    throw ExecutableError.executableNotFound(E.executableName)
+  }
+
   public static func lookup<E: Executable>(_ executable: E, overridePath: String? = nil) throws -> String {
     if let result = try? lookup(executable.executableName, overridePath: overridePath) {
       return result
     }
-    for executableName in E.alternativeExecutableNames {
+    for executableName in executable.alternativeExecutableNames {
       if let result = try? lookup(executableName, overridePath: overridePath) {
         return result
       }

@@ -13,7 +13,7 @@ public extension Executable {
   }
 
   static func checkValid() throws {
-    _ = try ExecutablePath.lookup(executableName)
+    _ = try ExecutablePath.lookup(self)
   }
   
   var commandLineArguments: [String] {

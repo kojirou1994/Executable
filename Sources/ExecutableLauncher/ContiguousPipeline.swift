@@ -30,7 +30,7 @@ public final class ContiguousPipeline {
       newPipe = Pipe()
       usedStandardOutput = .pipe(newPipe.unsafelyUnwrapped)
     }
-    
+
     let launcher = FPExecutableLauncher(standardInput: .pipe(lastPipe.unsafelyUnwrapped), standardOutput: usedStandardOutput, standardError: standardError)
     let newProcess = try launcher.generateProcess(for: newExecutable)
     processes.append(newProcess)
@@ -39,6 +39,7 @@ public final class ContiguousPipeline {
   }
 
   public func run() throws {
+    assert(lastPipe == nil, "Last executable not set")
     try processes.forEach { process in
       try process.run()
     }

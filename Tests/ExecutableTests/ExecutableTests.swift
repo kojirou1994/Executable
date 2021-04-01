@@ -32,11 +32,13 @@ final class ExecutableTests: XCTestCase {
   }
 
   func testContiguousPipeline() throws {
+    let lastOutputPipe = Pipe()
     let pipeline = try ContiguousPipeline(AnyExecutable(executableName: "ps", arguments: ["aux"]))
-      .append(AnyExecutable(executableName: "grep", arguments: ["a"]))
+      .append(AnyExecutable(executableName: "grep", arguments: ["a"]),
+              standardOutput: .pipe(lastOutputPipe))
 
     try pipeline.run()
-    let output = pipeline.lastPipe.fileHandleForReading.readDataToEndOfFile()
+    let output = lastOutputPipe.fileHandleForReading.readDataToEndOfFile()
     pipeline.waitUntilExit()
     XCTAssertFalse(output.isEmpty)
   }
