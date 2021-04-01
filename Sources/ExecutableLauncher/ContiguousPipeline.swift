@@ -4,20 +4,34 @@ import ExecutableDescription
 public final class ContiguousPipeline {
 
   public private(set) var processes: [Process]
-  public private(set) var lastPipe: Pipe
+  private var lastPipe: Pipe?
 
   public init<E: Executable>(_ executable: E, standardInput: ExecutableStandardStream? = nil, standardError: ExecutableStandardStream? = nil) throws {
-    lastPipe = .init()
+    let lastPipe = Pipe()
     let launcher = FPExecutableLauncher(standardInput: nil, standardOutput: .pipe(lastPipe), standardError: standardError)
-    processes = try [launcher.generateProcess(for: executable)]
+    self.lastPipe = lastPipe
+    self.processes = try [launcher.generateProcess(for: executable)]
   }
 
   @discardableResult
   public func append<E: Executable>(
     _ newExecutable: E,
+    isLast: Bool = false,
+    standardOutput: ExecutableStandardStream? = nil,
     standardError: ExecutableStandardStream? = nil) throws -> Self {
-    let newPipe = Pipe()
-    let launcher = FPExecutableLauncher(standardInput: .pipe(lastPipe), standardOutput: .pipe(newPipe), standardError: standardError)
+    precondition(lastPipe != nil, "Last executable has already been set!")
+
+    let usedStandardOutput: ExecutableStandardStream?
+    let newPipe: Pipe?
+    if isLast || standardOutput != nil {
+      newPipe = nil
+      usedStandardOutput = standardOutput
+    } else {
+      newPipe = Pipe()
+      usedStandardOutput = .pipe(newPipe.unsafelyUnwrapped)
+    }
+    
+    let launcher = FPExecutableLauncher(standardInput: .pipe(lastPipe.unsafelyUnwrapped), standardOutput: usedStandardOutput, standardError: standardError)
     let newProcess = try launcher.generateProcess(for: newExecutable)
     processes.append(newProcess)
     lastPipe = newPipe
