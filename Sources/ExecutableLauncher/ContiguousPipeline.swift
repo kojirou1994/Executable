@@ -8,7 +8,7 @@ public final class ContiguousPipeline {
 
   public init<E: Executable>(_ executable: E, standardInput: ExecutableStandardStream? = nil, standardError: ExecutableStandardStream? = nil) throws {
     let lastPipe = Pipe()
-    let launcher = FPExecutableLauncher(standardInput: nil, standardOutput: .pipe(lastPipe), standardError: standardError)
+    let launcher = FPExecutableLauncher(standardInput: standardInput, standardOutput: .pipe(lastPipe), standardError: standardError)
     self.lastPipe = lastPipe
     self.processes = try [launcher.generateProcess(for: executable)]
   }
