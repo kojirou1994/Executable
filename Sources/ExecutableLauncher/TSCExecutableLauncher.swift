@@ -1,8 +1,6 @@
 import TSCBasic
 
-@available(*, deprecated, renamed: "TSCExecutableLauncher")
-public typealias SwiftToolsSupportExecutableLauncher = TSCExecutableLauncher
-
+@available(macOS 10.15, *)
 public struct TSCExecutableLauncher: ExecutableLauncher {
 
   public let outputRedirection: Process.OutputRedirection
