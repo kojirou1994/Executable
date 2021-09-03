@@ -6,7 +6,11 @@ public final class ContiguousPipeline {
   public private(set) var processes: [Process]
   private var lastPipe: Pipe?
 
-  public init<E: Executable>(_ executable: E, standardInput: ExecutableStandardStream? = nil, standardError: ExecutableStandardStream? = nil) throws {
+  public init<E: Executable>(
+    _ executable: E,
+    standardInput: ExecutableStandardStream? = nil,
+    standardError: ExecutableStandardStream? = nil,
+    qualityOfService: QualityOfService? = nil) throws {
     let lastPipe = Pipe()
     let launcher = FPExecutableLauncher(standardInput: standardInput, standardOutput: .pipe(lastPipe), standardError: standardError)
     self.lastPipe = lastPipe
@@ -18,7 +22,8 @@ public final class ContiguousPipeline {
     _ newExecutable: E,
     isLast: Bool = false,
     standardOutput: ExecutableStandardStream? = nil,
-    standardError: ExecutableStandardStream? = nil) throws -> Self {
+    standardError: ExecutableStandardStream? = nil,
+    qualityOfService: QualityOfService? = nil) throws -> Self {
     precondition(lastPipe != nil, "Last executable has already been set!")
 
     let usedStandardOutput: ExecutableStandardStream?

@@ -5,13 +5,15 @@ public typealias FoundationExecutableLauncher = FPExecutableLauncher
 
 /// This launcher use Foundation Process class.
 public struct FPExecutableLauncher: ExecutableLauncher {
-  public let standardInput: ExecutableStandardStream?
-  public let standardOutput: ExecutableStandardStream?
-  public let standardError: ExecutableStandardStream?
+  public var standardInput: ExecutableStandardStream?
+  public var standardOutput: ExecutableStandardStream?
+  public var standardError: ExecutableStandardStream?
+  public var qualityOfService: QualityOfService?
 
   public init(standardInput: ExecutableStandardStream? = nil,
               standardOutput: ExecutableStandardStream? = nil,
-              standardError: ExecutableStandardStream? = nil) {
+              standardError: ExecutableStandardStream? = nil,
+              qualityOfService: QualityOfService? = nil) {
     self.standardInput = standardInput
     self.standardOutput = standardOutput
     self.standardError = standardError
@@ -61,6 +63,9 @@ public struct FPExecutableLauncher: ExecutableLauncher {
     }
     if let currentDirectoryURL = executable.currentDirectoryURL {
       process.currentDirectoryURL = currentDirectoryURL
+    }
+    if let qos = qualityOfService {
+      process.qualityOfService = qos
     }
     return process
   }
