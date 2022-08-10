@@ -1,8 +1,5 @@
 import Foundation
 
-@available(*, deprecated, renamed: "FPExecutableLauncher")
-public typealias FoundationExecutableLauncher = FPExecutableLauncher
-
 /// This launcher use Foundation Process class.
 public struct FPExecutableLauncher: ExecutableLauncher {
   public var standardInput: ExecutableStandardStream?
