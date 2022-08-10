@@ -1,4 +1,5 @@
 import TSCBasic
+@_exported import ExecutableLauncher
 
 @available(macOS 10.15, *)
 public struct TSCExecutableLauncher: ExecutableLauncher {
@@ -35,7 +36,7 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
     try process.launch()
     let result = try process.waitUntilExit()
     if options.checkNonZeroExitCode, result.exitStatus != .terminated(code: 0) {
-      throw ExecutableError.nonZeroExit(result.exitStatus)
+      throw ExecutableError.nonZeroExit
     }
     return result
   }
@@ -45,4 +46,20 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
   public typealias LaunchResult = ProcessResult
 
 }
+
 public typealias TSCExitStatus = ProcessResult.ExitStatus
+
+@available(macOS 10.15, *)
+extension ExecutableLauncher where Self == TSCExecutableLauncher {
+
+  @inlinable
+  public static var tscLauncher: Self {
+    .init(outputRedirection: .none, startNewProcessGroup: false)
+  }
+
+  @inlinable
+  public static func tscLauncher(outputRedirection: TSCExecutableLauncher.Process.OutputRedirection, startNewProcessGroup: Bool = false) -> Self {
+    .init(outputRedirection: outputRedirection, startNewProcessGroup: startNewProcessGroup)
+  }
+
+}

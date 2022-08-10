@@ -1,4 +1,5 @@
 import Foundation
+@_exported import ExecutableLauncher
 
 /// This launcher use Foundation Process class.
 public struct FPExecutableLauncher: ExecutableLauncher {
@@ -25,17 +26,7 @@ public struct FPExecutableLauncher: ExecutableLauncher {
     }
 
     if options.checkNonZeroExitCode, process.terminationStatus != 0 {
-      switch process.terminationReason {
-      case .exit:
-        throw ExecutableError.nonZeroExit(.terminated(code: process.terminationStatus))
-      case .uncaughtSignal:
-        throw ExecutableError.nonZeroExit(.signalled(signal: process.terminationStatus))
-      #if os(macOS)
-      @unknown default:
-        assertionFailure("Unknown terminationReason!")
-        throw ExecutableError.nonZeroExit(.terminated(code: process.terminationStatus))
-      #endif
-      }
+      throw ExecutableError.nonZeroExit
     }
     return .init(terminationStatus: process.terminationStatus, terminationReason: process.terminationReason)
   }
@@ -72,6 +63,20 @@ public struct FPExecutableLauncher: ExecutableLauncher {
   public struct LaunchResult {
     public let terminationStatus: Int32
     public let terminationReason: Process.TerminationReason
+  }
+
+}
+
+extension ExecutableLauncher where Self == FPExecutableLauncher {
+
+  @inlinable
+  public static var fpLauncher: Self {
+    .init(standardInput: nil, standardOutput: nil, standardError: nil)
+  }
+
+  @inlinable
+  public static func fpLauncher(standardInput: ExecutableStandardStream?, standardOutput: ExecutableStandardStream?, standardError: ExecutableStandardStream?) -> Self {
+    .init(standardInput: standardInput, standardOutput: standardOutput, standardError: standardError)
   }
 
 }

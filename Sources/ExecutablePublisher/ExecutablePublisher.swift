@@ -1,7 +1,7 @@
 #if os(macOS)
 import Foundation
 import Combine
-import ExecutableLauncher
+import FPExecutableLauncher
 
 @available(OSX 10.15, *)
 public extension Executable {

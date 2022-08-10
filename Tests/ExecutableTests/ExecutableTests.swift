@@ -1,6 +1,8 @@
 import XCTest
 import ExecutableDescription
 import ExecutableLauncher
+import FPExecutableLauncher
+import TSCExecutableLauncher
 
 final class ExecutableTests: XCTestCase {
   func testError() throws {
@@ -10,7 +12,7 @@ final class ExecutableTests: XCTestCase {
     } catch let error as ExecutableError {
       switch error {
       case .executableNotFound(_): break
-      case .nonZeroExit(_): break
+      case .nonZeroExit: break
       case .invalidExecutableURL(_): break
       }
     }
@@ -18,9 +20,9 @@ final class ExecutableTests: XCTestCase {
 
   func testCheckValid() throws {
     let valid = AnyExecutable(executableName: "bash", arguments: [])
-    XCTAssertNoThrow(try valid.checkValid())
+    XCTAssertNoThrow(try valid.validate())
     let invalid = AnyExecutable(executableName: "hsab", arguments: [])
-    XCTAssertThrowsError(try invalid.checkValid())
+    XCTAssertThrowsError(try invalid.validate())
   }
 
   func testFoundationLauncher() throws {
@@ -41,5 +43,11 @@ final class ExecutableTests: XCTestCase {
     let output = lastOutputPipe.fileHandleForReading.readDataToEndOfFile()
     pipeline.waitUntilExit()
     XCTAssertFalse(output.isEmpty)
+  }
+
+  func testAsyncFuncs() async throws {
+    let ffmpeg = AnyExecutable(executableURL: URL(fileURLWithPath: "/Users/kojirou/Executable/arm64/ffmpeg"), arguments: ["-h", "full"])
+    let result = try await ffmpeg.result(use: TSCExecutableLauncher())
+    print(try result.output.get().count)
   }
 }

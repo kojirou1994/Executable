@@ -26,4 +26,11 @@ extension Executable {
   public func generateProcess<T: ExecutableLauncher>(use launcher: T) throws -> T.Process {
     try launcher.generateProcess(for: self)
   }
+
+  @inlinable
+  @discardableResult
+  @available(macOS 10.15, *)
+  public func result<T: ExecutableLauncher>(use launcher: T,  options: ExecutableLaunchOptions = .init()) async throws -> T.LaunchResult {
+    try launcher.launch(executable: self, options: options)
+  }
 }

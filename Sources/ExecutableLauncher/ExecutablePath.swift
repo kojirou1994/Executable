@@ -7,7 +7,7 @@ public struct ExecutablePath {
   public static func set(path: String) {
     ExecutablePath.PATHs = path.split(separator: ":")
   }
-  
+
   public static func add(_ path: String, toHead: Bool = true) {
     let paths = path.split(separator: ":")
     if toHead {

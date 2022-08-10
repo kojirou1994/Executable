@@ -6,6 +6,12 @@ public final class ContiguousPipeline {
   public private(set) var processes: [Process]
   private var lastPipe: Pipe?
 
+  public enum StandardErrorRedirection {
+    case stream(ExecutableStandardStream)
+    case stdout
+    case none
+  }
+
   public init<E: Executable>(
     _ executable: E,
     standardInput: ExecutableStandardStream? = nil,
