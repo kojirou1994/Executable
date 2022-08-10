@@ -11,7 +11,7 @@ public protocol Executable: CustomStringConvertible {
   /// executable arguments, not including executableName
   var arguments: [String] { get }
 
-  var environment: [String : String]? { get }
+  var environment: [String: String]? { get }
 
   /// Working Directory
   var currentDirectoryURL: URL? { get }
@@ -44,7 +44,6 @@ extension Executable {
 
 extension Executable {
 
-  @inlinable
   public func eraseToAnyExecutable() -> AnyExecutable {
     var e = AnyExecutable(executableName: executableName, arguments: arguments)
     e.executableURL = executableURL
