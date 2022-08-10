@@ -17,6 +17,7 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.3.0"),
+    .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
     .package(url: "https://github.com/kojirou1994/SystemUp.git", .branch("main")),
   ],
   targets: [
@@ -25,6 +26,8 @@ let package = Package(
       name: "ExecutableLauncher",
       dependencies: [
         "ExecutableDescription",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+        .product(name: "SystemUp", package: "SystemUp"),
       ]),
     .target(
       name: "FPExecutableLauncher",
