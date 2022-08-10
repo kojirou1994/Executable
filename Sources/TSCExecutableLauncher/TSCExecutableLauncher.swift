@@ -22,12 +22,12 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
                    environment: environment,
                    workingDirectory: AbsolutePath(workingDirectory),
                    outputRedirection: outputRedirection,
-                   verbose: false, startNewProcessGroup: startNewProcessGroup)
+                   startNewProcessGroup: startNewProcessGroup)
     } else {
       return .init(arguments: arguments,
                    environment: environment,
                    outputRedirection: outputRedirection,
-                   verbose: false, startNewProcessGroup: startNewProcessGroup)
+                   startNewProcessGroup: startNewProcessGroup)
     }
   }
 

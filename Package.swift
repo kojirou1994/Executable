@@ -16,7 +16,7 @@ let package = Package(
     .library(name: "ExecutablePublisher", targets: ["ExecutablePublisher"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.1.1"),
+    .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.3.0"),
     .package(url: "https://github.com/kojirou1994/SystemUp.git", .branch("main")),
   ],
   targets: [
