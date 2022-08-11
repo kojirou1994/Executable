@@ -11,18 +11,11 @@ final class ExecutableTests: XCTestCase {
       try none.launch(use: TSCExecutableLauncher(outputRedirection: .none))
     } catch let error as ExecutableError {
       switch error {
-      case .executableNotFound(_): break
+      case .executableNotFound: break
       case .nonZeroExit: break
-      case .invalidExecutableURL(_): break
+      case .invalidProvidedExecutablePath: break
       }
     }
-  }
-
-  func testCheckValid() throws {
-    let valid = AnyExecutable(executableName: "bash", arguments: [])
-    XCTAssertNoThrow(try valid.validate())
-    let invalid = AnyExecutable(executableName: "hsab", arguments: [])
-    XCTAssertThrowsError(try invalid.validate())
   }
 
   func testFoundationLauncher() throws {

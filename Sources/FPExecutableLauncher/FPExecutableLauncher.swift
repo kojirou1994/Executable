@@ -34,7 +34,7 @@ public struct FPExecutableLauncher: ExecutableLauncher {
   public func generateProcess<T>(for executable: T) throws -> Process where T : Executable {
     let process = Process()
     // use provided exe url, or search in PATH
-    process.executableURL = try executable.executableURL ?? URL(fileURLWithPath: ExecutablePath.lookup(executable))
+    process.executableURL = try URL(fileURLWithPath: ExecutablePath.lookup(executable).get())
 
     process.arguments = executable.arguments
     if let environment = executable.environment {
@@ -70,12 +70,12 @@ public struct FPExecutableLauncher: ExecutableLauncher {
 extension ExecutableLauncher where Self == FPExecutableLauncher {
 
   @inlinable
-  public static var fpLauncher: Self {
+  public static var foundationProcess: Self {
     .init(standardInput: nil, standardOutput: nil, standardError: nil)
   }
 
   @inlinable
-  public static func fpLauncher(standardInput: ExecutableStandardStream?, standardOutput: ExecutableStandardStream?, standardError: ExecutableStandardStream?) -> Self {
+  public static func foundationProcess(standardInput: ExecutableStandardStream?, standardOutput: ExecutableStandardStream?, standardError: ExecutableStandardStream?) -> Self {
     .init(standardInput: standardInput, standardOutput: standardOutput, standardError: standardError)
   }
 

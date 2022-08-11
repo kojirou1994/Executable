@@ -23,6 +23,7 @@ public protocol Executable: CustomStringConvertible {
   var alternativeExecutableNames: [String] { get }
 
   /// Specify the executable file's URL
+  @available(*, deprecated)
   var executableURL: URL? { get }
 }
 
@@ -32,9 +33,9 @@ extension Executable {
 
   public var executableURL: URL? { nil }
 
-  public var environment: [String : String]? {nil}
+  public var environment: [String : String]? { nil }
 
-  public var currentDirectoryURL: URL? {nil}
+  public var currentDirectoryURL: URL? { nil }
 
   public var description: String {
     "Executable: \(executableName) \(arguments.joined(separator: " "))"

@@ -1,3 +1,5 @@
+@_exported import ExecutableDescription
+
 public protocol ExecutableLauncher {
   associatedtype Process
   associatedtype LaunchResult

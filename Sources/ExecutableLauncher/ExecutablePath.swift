@@ -1,77 +1,53 @@
-import Foundation
+import Algorithms
+import SystemPackage
+import SystemUp
 
-public struct ExecutablePath {
-  
-  private static var PATHs = ProcessInfo.processInfo.environment["PATH", default: ""].split(separator: ":")
-  
-  public static func set(path: String) {
-    ExecutablePath.PATHs = path.split(separator: ":")
-  }
+public enum ExecutablePath {
 
-  public static func add(_ path: String, toHead: Bool = true) {
-    let paths = path.split(separator: ":")
-    if toHead {
-      Self.PATHs.insert(contentsOf: paths, at: 0)
+  public typealias LookupMethod = (String) -> String?
+
+  public static var customLookup: LookupMethod?
+
+  @inlinable
+  public static func lookup<E: Executable>(_ executable: E? = nil, type: E.Type = E.self, forcePATH: String? = nil) -> Result<String, ExecutableError> {
+    if let executablePath = executable?.executableURL?.path {
+      if FileSyscalls.check(.absolute(FilePath(executablePath)), accessibility: .execute) {
+        return .failure(.invalidProvidedExecutablePath)
+      }
+      return .success(executablePath)
+    }
+    if let instance = executable {
+      return lookup(instance.executableName, alternativeExecutableNames: instance.alternativeExecutableNames, forcePATH: forcePATH)
     } else {
-      Self.PATHs.append(contentsOf: paths)
+      return lookup(E.executableName, alternativeExecutableNames: E.alternativeExecutableNames, forcePATH: forcePATH)
     }
   }
-  
-  public typealias LookupMethod = (String) throws -> String?
-  
-  private static var customLookup: LookupMethod?
 
-  public static func set(lookupMethod: LookupMethod?) {
-    Self.customLookup = lookupMethod
-  }
+  public static func lookup(_ executableName: String, alternativeExecutableNames: [String], forcePATH: String? = nil) -> Result<String, ExecutableError> {
 
-  public static func lookup<E: Executable>(_ executable: E.Type, overridePath: String? = nil) throws -> String {
-    if let result = try? lookup(E.executableName, overridePath: overridePath) {
-      return result
-    }
-    for executableName in E.alternativeExecutableNames {
-      if let result = try? lookup(executableName, overridePath: overridePath) {
-        return result
-      }
-    }
-    throw ExecutableError.executableNotFound(E.executableName)
-  }
+    let executableNames = chain(CollectionOfOne(executableName), alternativeExecutableNames)
 
-  public static func lookup<E: Executable>(_ executable: E, overridePath: String? = nil) throws -> String {
-    if let result = try? lookup(executable.executableName, overridePath: overridePath) {
-      return result
-    }
-    for executableName in executable.alternativeExecutableNames {
-      if let result = try? lookup(executableName, overridePath: overridePath) {
-        return result
-      }
-    }
-    throw ExecutableError.executableNotFound(executable.executableName)
-  }
-
-  @discardableResult
-  public static func lookup(_ executableName: String, overridePath: String? = nil) throws -> String {
-    precondition(!executableName.isEmpty, "executableName is empty!")
-    if let customLookup = Self.customLookup {
-      if let result = try customLookup(executableName) {
-        return result
+    for name in executableNames {
+      assert(!name.isEmpty, "this executableName is empty!")
+      assert(!name.contains("/" as Character))
+      if let result = customLookup?(name) {
+        return .success(result)
       }
     }
 
-    let searchPATHs: [Substring]
-    if let path = overridePath {
-      searchPATHs = path.split(separator: ":")
-    } else {
-      searchPATHs = PATHs
+    guard let path = (forcePATH ?? PosixEnvironment.get(key: "PATH")) else {
+      return .failure(.executableNotFound)
     }
 
-    for path in searchPATHs {
-      let tmp = "\(path)/\(executableName)"
-      if FileManager.default.isExecutableFile(atPath: tmp) {
-        return tmp
+    let searchPATHs = path.lazy.split(separator: ":").map { FilePath(String($0)) }
+
+    for (name, path) in product(executableNames, searchPATHs) {
+      let testPath = path.appending(name)
+      if FileSyscalls.check(.absolute(testPath), accessibility: .execute) {
+        return .success(testPath.string)
       }
     }
 
-    throw ExecutableError.executableNotFound(executableName)
+    return .failure(.executableNotFound)
   }
 }

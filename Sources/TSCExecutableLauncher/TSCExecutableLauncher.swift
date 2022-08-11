@@ -13,7 +13,7 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
   }
 
   public func generateProcess<T>(for executable: T) throws -> Process where T : Executable {
-    let launchPath = try executable.executableURL?.path ?? ExecutablePath.lookup(executable)
+    let launchPath = try ExecutablePath.lookup(executable).get()
     let arguments = CollectionOfOne(launchPath) + executable.arguments
     let environment = executable.environment ?? ProcessEnv.vars
     
@@ -47,18 +47,16 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
 
 }
 
-public typealias TSCExitStatus = ProcessResult.ExitStatus
-
 @available(macOS 10.15, *)
-extension ExecutableLauncher where Self == TSCExecutableLauncher {
+public extension ExecutableLauncher where Self == TSCExecutableLauncher {
 
   @inlinable
-  public static var tscLauncher: Self {
+  static var tsc: Self {
     .init(outputRedirection: .none, startNewProcessGroup: false)
   }
 
   @inlinable
-  public static func tscLauncher(outputRedirection: TSCExecutableLauncher.Process.OutputRedirection, startNewProcessGroup: Bool = false) -> Self {
+  static func tsc(outputRedirection: TSCExecutableLauncher.Process.OutputRedirection, startNewProcessGroup: Bool = false) -> Self {
     .init(outputRedirection: outputRedirection, startNewProcessGroup: startNewProcessGroup)
   }
 
