@@ -33,9 +33,8 @@ public struct FPExecutableLauncher: ExecutableLauncher {
 
   public func generateProcess<T>(for executable: T) throws -> Process where T : Executable {
     let process = Process()
-    // use provided exe url, or search in PATH
-    process.executableURL = try URL(fileURLWithPath: ExecutablePath.lookup(executable).get())
 
+    process.executableURL = try URL(fileURLWithPath: ExecutablePath.lookup(executable).get())
     process.arguments = executable.arguments
     if let environment = executable.environment {
       process.environment = environment

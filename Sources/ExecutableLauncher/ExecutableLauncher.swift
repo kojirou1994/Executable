@@ -31,8 +31,7 @@ extension Executable {
 
   @inlinable
   @discardableResult
-  @available(macOS 10.15, *)
-  public func result<T: ExecutableLauncher>(use launcher: T,  options: ExecutableLaunchOptions = .init()) async throws -> T.LaunchResult {
+  public func result<T: ExecutableLauncher>(use launcher: T,  options: ExecutableLaunchOptions = .init()) throws -> T.LaunchResult {
     try launcher.launch(executable: self, options: options)
   }
 }
