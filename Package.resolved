@@ -59,9 +59,9 @@
         "package": "SystemUp",
         "repositoryURL": "https://github.com/kojirou1994/SystemUp.git",
         "state": {
-          "branch": "main",
+          "branch": null,
           "revision": "989967655c1d4a572be3cba5328f651470e84f77",
-          "version": null
+          "version": "0.0.1"
         }
       }
     ]
