@@ -38,9 +38,4 @@ final class ExecutableTests: XCTestCase {
     XCTAssertFalse(output.isEmpty)
   }
 
-  func testAsyncFuncs() async throws {
-    let ffmpeg = AnyExecutable(executableURL: URL(fileURLWithPath: "/Users/kojirou/Executable/arm64/ffmpeg"), arguments: ["-h", "full"])
-    let result = try await ffmpeg.result(use: TSCExecutableLauncher())
-    print(try result.output.get().count)
-  }
 }
