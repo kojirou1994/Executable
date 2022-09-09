@@ -12,9 +12,10 @@ public enum ExecutablePath {
   public static func lookup<E: Executable>(_ executable: E? = nil, type: E.Type = E.self, forcePATH: String? = nil) -> Result<String, ExecutableError> {
     if let executablePath = (executable?.executablePath ?? executable?.executableURL?.path) {
       if FileSyscalls.check(.absolute(FilePath(executablePath)), accessibility: .execute) {
+        return .success(executablePath)
+      } else {
         return .failure(.invalidProvidedExecutablePath)
       }
-      return .success(executablePath)
     }
     if let instance = executable {
       return lookup(instance.executableName, alternativeExecutableNames: instance.alternativeExecutableNames, forcePATH: forcePATH)
