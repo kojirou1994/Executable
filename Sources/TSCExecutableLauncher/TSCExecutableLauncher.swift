@@ -17,10 +17,10 @@ public struct TSCExecutableLauncher: ExecutableLauncher {
     let arguments = CollectionOfOne(launchPath) + executable.arguments
     let environment = executable.environment ?? ProcessEnv.vars
     
-    if let workingDirectory = executable.currentDirectoryURL?.path {
+    if let workingDirectory = executable.changeWorkingDirectory {
       return .init(arguments: arguments,
                    environment: environment,
-                   workingDirectory: AbsolutePath(workingDirectory),
+                   workingDirectory: try AbsolutePath(validating: workingDirectory),
                    outputRedirection: outputRedirection,
                    startNewProcessGroup: startNewProcessGroup)
     } else {

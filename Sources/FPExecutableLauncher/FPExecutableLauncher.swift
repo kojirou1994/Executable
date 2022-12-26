@@ -48,8 +48,8 @@ public struct FPExecutableLauncher: ExecutableLauncher {
     if let standardError = standardError?.valueForProcess {
       process.standardError = standardError
     }
-    if let currentDirectoryURL = executable.currentDirectoryURL {
-      process.currentDirectoryURL = currentDirectoryURL
+    if let currentDirectoryURL = executable.changeWorkingDirectory {
+      process.currentDirectoryURL = URL(fileURLWithPath: currentDirectoryURL)
     }
     if let qos = qualityOfService {
       process.qualityOfService = qos

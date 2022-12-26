@@ -1,4 +1,4 @@
-import Foundation
+import Escape
 
 public protocol Executable: CustomStringConvertible {
 
@@ -14,7 +14,7 @@ public protocol Executable: CustomStringConvertible {
   var environment: [String: String]? { get }
 
   /// Working Directory
-  var currentDirectoryURL: URL? { get }
+  var changeWorkingDirectory: String? { get }
 
   /// Override static executableName
   var executableName: String { get }
@@ -22,10 +22,7 @@ public protocol Executable: CustomStringConvertible {
   /// Overwride static alternativeExecutableNames
   var alternativeExecutableNames: [String] { get }
 
-  /// Specify the executable file's URL
-  @available(*, deprecated)
-  var executableURL: URL? { get }
-
+  /// Specify the executable file's path
   var executablePath: String? { get }
 }
 
@@ -33,16 +30,19 @@ extension Executable {
 
   public var executableName: String { Self.executableName }
 
-  public var executableURL: URL? { nil }
-
   public var executablePath: String? { nil }
 
   public var environment: [String : String]? { nil }
 
-  public var currentDirectoryURL: URL? { nil }
+  public var changeWorkingDirectory: String? { nil }
 
   public var description: String {
-    "Executable: \(executableName) \(arguments.joined(separator: " "))"
+    var result = (executablePath ?? executableName).simpleShellEscaped()
+    for arg in arguments {
+      result += " "
+      result += arg.simpleShellEscaped()
+    }
+    return result
   }
 
 }
@@ -51,12 +51,11 @@ extension Executable {
 
   public func eraseToAnyExecutable() -> AnyExecutable {
     var e = AnyExecutable(executableName: executableName, arguments: arguments)
-    e.executableURL = executableURL
     if let executablePath = self.executablePath {
       e.executablePath = executablePath
     }
     e.environment = environment
-    e.currentDirectoryURL = currentDirectoryURL
+    e.changeWorkingDirectory = changeWorkingDirectory
     e.alternativeExecutableNames = alternativeExecutableNames
     return e
   }

@@ -1,4 +1,4 @@
-import struct Foundation.URL
+import Foundation
 
 public struct AnyExecutable: Executable {
   public static var executableName: String {
@@ -11,28 +11,19 @@ public struct AnyExecutable: Executable {
     self.arguments = arguments
   }
 
-  public init(executableURL: URL, arguments: [String]) {
-    self.executableName = executableURL.lastPathComponent
+  public init(executablePath: String, arguments: [String]) {
+    self.executableName = (executablePath as NSString).lastPathComponent
     self.arguments = arguments
-    self.executableURL = executableURL
+    self.executablePath = executablePath
   }
 
   public let executableName: String
-
-  public var executableURL: URL? {
-    get {
-      executablePath.map(URL.init(fileURLWithPath:))
-    }
-    set {
-      executablePath = newValue?.path
-    }
-  }
 
   public var executablePath: String?
 
   public var environment: [String : String]?
 
-  public var currentDirectoryURL: URL?
+  public var changeWorkingDirectory: String?
 
   public var arguments: [String]
 

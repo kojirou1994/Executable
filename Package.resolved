@@ -6,8 +6,17 @@
         "repositoryURL": "https://github.com/kojirou1994/CUtility.git",
         "state": {
           "branch": null,
-          "revision": "863541d18eefca052239f51af65ae44f5df4dcb7",
-          "version": "0.1.12"
+          "revision": "acd35be02969988c627a995681350e7d7507a6a1",
+          "version": "0.2.0"
+        }
+      },
+      {
+        "package": "Escape",
+        "repositoryURL": "https://github.com/kojirou1994/Escape.git",
+        "state": {
+          "branch": null,
+          "revision": "3c728a5eb731ea0d990291778c5bbe168613a4b4",
+          "version": "0.0.1"
         }
       },
       {
@@ -42,8 +51,8 @@
         "repositoryURL": "https://github.com/apple/swift-tools-support-core.git",
         "state": {
           "branch": null,
-          "revision": "0b77e67c484e532444ceeab60119b8536f8cd648",
-          "version": "0.3.0"
+          "revision": "284a41800b7c5565512ec6ae21ee818aac1f84ac",
+          "version": "0.4.0"
         }
       },
       {
@@ -60,8 +69,8 @@
         "repositoryURL": "https://github.com/kojirou1994/SystemUp.git",
         "state": {
           "branch": null,
-          "revision": "36ec15b49425a4280fb8cf858944b3b26ce96fbc",
-          "version": "0.0.2"
+          "revision": "67fe5256b9b85c00c561492f5d721975b7daab23",
+          "version": "0.2.2"
         }
       }
     ]
