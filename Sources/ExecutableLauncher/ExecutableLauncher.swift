@@ -1,4 +1,5 @@
 @_exported import ExecutableDescription
+import SystemUp
 
 public protocol ExecutableLauncher {
   associatedtype Process
@@ -31,7 +32,13 @@ extension Executable {
 
   @inlinable
   @discardableResult
-  public func result<T: ExecutableLauncher>(use launcher: T,  options: ExecutableLaunchOptions = .init()) throws -> T.LaunchResult {
-    try launcher.launch(executable: self, options: options)
+  public func result<T: ExecutableLauncher>(use launcher: T,  options: ExecutableLaunchOptions = .init()) async throws -> T.LaunchResult {
+    try await withUnsafeThrowingContinuation { continuation in
+      try! PosixThread.detach {
+        continuation.resume(with: Result.init(catching: {
+          try launcher.launch(executable: self, options: options)
+        }))
+      }
+    }
   }
 }
