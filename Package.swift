@@ -50,6 +50,7 @@ let package = Package(
       dependencies: [
         "ExecutableLauncher",
         .product(name: "SystemFileManager", package: "SystemUp"),
+        .product(name: "Command", package: "SystemUp"),
       ]),
     .target(
       name: "ExecutablePublisher",

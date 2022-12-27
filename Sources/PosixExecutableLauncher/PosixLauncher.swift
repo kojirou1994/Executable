@@ -49,14 +49,13 @@ public struct PosixExecutableLauncher: ExecutableLauncher {
 
 public struct PosixPipelineLauncher {
   /// first process stdin
-  public var stdInput: Command.ChildIO
+  public var firstStandardInput: Command.ChildIO
 
   /// last process stdout
-  @available(*, unavailable)
-  var stdOutput: Command.ChildIO = .inherit
+  public var lastStandardOutput: Command.ChildIO = .inherit
 
   /// every process default stderr, don't use .makePipe
-  public var defaultStderr: Command.ChildIO = .inherit
+  public var defaultStandardError: Command.ChildIO = .inherit
 
   struct PipeItem {
     let exe: AnyExecutable
@@ -68,8 +67,8 @@ public struct PosixPipelineLauncher {
 
   var items: [PipeItem] = []
 
-  public init(stdInput: Command.ChildIO = .inherit) {
-    self.stdInput = stdInput
+  public init(firstStandardInput: Command.ChildIO = .inherit) {
+    self.firstStandardInput = firstStandardInput
   }
 
   @discardableResult
@@ -80,11 +79,11 @@ public struct PosixPipelineLauncher {
     return copy
   }
 
-  public struct PipeProcesses {
+  public struct LaunchedPipeline {
 
     var processes: [Command.ChildProcess]
 
-    public var first: Command.ChildProcess {
+    public var firstProcess: Command.ChildProcess {
       _read {
         yield processes[0]
       }
@@ -93,8 +92,8 @@ public struct PosixPipelineLauncher {
       }
     }
 
-    /// last process's output
-    public let stdout: FileDescriptor?
+    /// last process's output if makePipe
+    public let lastStandardOutput: FileDescriptor?
 
     public mutating func waitUntilExit() -> [WaitPID.ExitStatus] {
       var result = [WaitPID.ExitStatus]()
@@ -105,22 +104,20 @@ public struct PosixPipelineLauncher {
     }
   }
 
-  public func launch() throws -> PipeProcesses {
-    assert(items.count > 1, "no need to pipe")
-    var iterator = items.makeIterator()
-    guard let first = iterator.next() else {
-      fatalError()
-    }
+  public func launch() throws -> LaunchedPipeline {
+    precondition(items.count > 1, "no need to pipe")
+    let first = items[0]
+    let last = items[items.count-1]
+    let mid = items.dropFirst().dropLast()
 
-    func setup(_ item: PipeItem, stdin: Command.ChildIO) throws -> (Command.ChildProcess, stdoutRead: FileDescriptor) {
+    func addNonLast(_ item: PipeItem, stdin: Command.ChildIO) throws -> (Command.ChildProcess, stdoutRead: FileDescriptor) {
       var command = Command(executable: item.path, arguments: item.exe.arguments)
       command.setup(item.exe)
 
       command.stdin = stdin
-      let newPipe = try FileDescriptor.pipe()
-      command.stdout = .fd(newPipe.writeEnd)
+      command.stdout = .makePipe
 
-      let stderr = item.stderr ?? defaultStderr
+      let stderr = item.stderr ?? defaultStandardError
       switch stderr {
       case .makePipe:
         assertionFailure("don't use makePipe!")
@@ -129,24 +126,42 @@ public struct PosixPipelineLauncher {
       command.stderr = stderr
 
       let process = try command.spawn()
-      try newPipe.writeEnd.close()
 
-      return (process, newPipe.readEnd)
+      return (process, process.stdout!)
     }
 
-    let (firstProcess, secondStdin) = try setup(first, stdin: stdInput)
+    let (firstProcess, secondStdin) = try addNonLast(first, stdin: firstStandardInput)
 
     var processes: [Command.ChildProcess] = [firstProcess]
+    // TODO: wait/kill processes if error
 
     var lastPipeReadEnd: FileDescriptor = secondStdin
-    while let item = iterator.next() {
-      let (newProcess, newStdin) = try setup(item, stdin: .fd(lastPipeReadEnd))
+    for item in mid {
+      let (newProcess, newStdin) = try addNonLast(item, stdin: .fd(lastPipeReadEnd))
       try lastPipeReadEnd.close()
       lastPipeReadEnd = newStdin
       processes.append(newProcess)
     }
 
-    return .init(processes: processes, stdout: lastPipeReadEnd)
+    var command = Command(executable: last.path, arguments: last.exe.arguments)
+    command.setup(last.exe)
+
+    command.stdin = .fd(lastPipeReadEnd)
+    command.stdout = lastStandardOutput
+
+    let stderr = last.stderr ?? defaultStandardError
+    switch stderr {
+    case .makePipe:
+      assertionFailure("don't use makePipe!")
+    default: break
+    }
+    command.stderr = stderr
+
+    let lastProcess = try command.spawn()
+    try lastPipeReadEnd.close()
+    processes.append(lastProcess)
+
+    return .init(processes: processes, lastStandardOutput: lastProcess.stdout)
   }
 
 }
