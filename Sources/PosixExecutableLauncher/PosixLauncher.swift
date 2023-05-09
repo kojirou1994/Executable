@@ -4,14 +4,14 @@ import SystemUp
 import Command
 
 extension Command {
-  mutating func setup(_ exe: any Executable) {
+  public init(executable: some Executable) throws {
+    self.init(executable: try ExecutablePath.lookup(executable).get(), arguments: executable.arguments)
     searchPATH = false
-    cwd = exe.changeWorkingDirectory
-    if let env = exe.environment {
+    cwd = executable.changeWorkingDirectory
+    if let env = executable.environment {
       environment = .custom(.init(environment: env), mergeGlobal: false)
     }
   }
-
 }
 
 public struct PosixExecutableLauncher: ExecutableLauncher {
@@ -28,9 +28,7 @@ public struct PosixExecutableLauncher: ExecutableLauncher {
   public var stderr: Command.ChildIO
 
   public func generateProcess<T>(for executable: T) throws -> Command where T : Executable {
-    let path = try ExecutablePath.lookup(executable).get()
-    var command = Command(executable: path, arguments: executable.arguments)
-    command.setup(executable)
+    var command = try Command(executable: executable)
     command.stdin = stdin
     command.stdout = stdout
     command.stderr = stderr
@@ -62,11 +60,8 @@ public struct PosixPipelineLauncher {
   public var defaultStandardError: Command.ChildIO = .inherit
 
   struct PipeItem {
-    let exe: any Executable
-    /// cached exe path
-    let path: String
-    /// overwride default stderr
-    let stderr: Command.ChildIO
+    /// prepared command, stdin and stdout are not set
+    let command: Command
   }
 
   var items: [PipeItem] = []
@@ -78,8 +73,12 @@ public struct PosixPipelineLauncher {
   @discardableResult
   __consuming public func appending<E: Executable>(_ newExecutable: E, stderr: Command.ChildIO? = nil) throws -> Self {
     var copy = self
-    let path = try ExecutablePath.lookup(newExecutable).get()
-    copy.items.append(.init(exe: newExecutable, path: path, stderr: stderr ?? defaultStandardError))
+    let stderr = stderr ?? defaultStandardError
+    switch stderr {
+    case .makePipe: assertionFailure("don't use makePipe for stderr!")
+    default: break
+    }
+    copy.items.append(.init(command: try Command(executable: newExecutable)))
     return copy
   }
 
@@ -116,19 +115,9 @@ public struct PosixPipelineLauncher {
     let mid = items.dropFirst().dropLast()
 
     func addNonLast(_ item: PipeItem, stdin: Command.ChildIO) throws -> (Command.ChildProcess, stdoutRead: FileDescriptor) {
-      var command = Command(executable: item.path, arguments: item.exe.arguments)
-
-      command.setup(item.exe)
-
+      var command = item.command
       command.stdin = stdin
       command.stdout = .makePipe
-
-      switch item.stderr {
-      case .makePipe:
-        assertionFailure("don't use makePipe!")
-      default: break
-      }
-      command.stderr = item.stderr
 
       let process = try command.spawn()
 
@@ -148,19 +137,10 @@ public struct PosixPipelineLauncher {
       processes.append(newProcess)
     }
 
-    var command = Command(executable: last.path, arguments: last.exe.arguments)
-    command.setup(last.exe)
+    var command = last.command
 
     command.stdin = .fd(lastPipeReadEnd)
     command.stdout = lastStandardOutput
-
-    let stderr = last.stderr ?? defaultStandardError
-    switch stderr {
-    case .makePipe:
-      assertionFailure("don't use makePipe!")
-    default: break
-    }
-    command.stderr = stderr
 
     let lastProcess = try command.spawn()
     try lastPipeReadEnd.close()
