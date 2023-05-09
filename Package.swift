@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
   name: "Executable",
   platforms: [
-    .macOS(.v10_13)
+    .macOS(.v10_15),
   ],
   products: [
     .library(name: "ExecutableDescription", targets: ["ExecutableDescription"]),
@@ -18,7 +18,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.3.0"),
     .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
-    .package(url: "https://github.com/kojirou1994/SystemUp.git", from: "0.0.1"),
+    .package(url: "https://github.com/kojirou1994/SystemUp.git", from: "0.3.0"),
     .package(url: "https://github.com/kojirou1994/Escape.git", from: "0.0.1"),
   ],
   targets: [
