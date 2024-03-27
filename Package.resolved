@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/kojirou1994/CUtility.git",
         "state": {
           "branch": null,
-          "revision": "acd35be02969988c627a995681350e7d7507a6a1",
-          "version": "0.2.0"
+          "revision": "0aedc737ba936d53a987488d44a5aef9db894981",
+          "version": "0.3.6"
         }
       },
       {
@@ -35,6 +35,15 @@
           "branch": null,
           "revision": "0a5bc04095a675662cf24757cc0640aa2204253b",
           "version": "1.0.2"
+        }
+      },
+      {
+        "package": "swift-syntax",
+        "repositoryURL": "https://github.com/apple/swift-syntax.git",
+        "state": {
+          "branch": null,
+          "revision": "64889f0c732f210a935a0ad7cda38f77f876262d",
+          "version": "509.1.1"
         }
       },
       {
@@ -69,8 +78,8 @@
         "repositoryURL": "https://github.com/kojirou1994/SystemUp.git",
         "state": {
           "branch": null,
-          "revision": "86a0555c9169d73f78798365e23bac41fd2e7295",
-          "version": "0.3.0"
+          "revision": "33160924345a7942bee6614f05eef4cd6e134e0f",
+          "version": "0.5.0"
         }
       }
     ]

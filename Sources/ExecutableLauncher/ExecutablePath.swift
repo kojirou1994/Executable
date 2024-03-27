@@ -11,7 +11,7 @@ public enum ExecutablePath {
   @inlinable
   public static func lookup<E: Executable>(_ executable: E? = nil, type: E.Type = E.self, forcePATH: String? = nil) -> Result<String, ExecutableError> {
     if let executablePath = executable?.executablePath {
-      if FileSyscalls.check(.absolute(FilePath(executablePath)), accessibility: .execute) {
+      if SystemCall.check(accessibility: .execute, for: executablePath) {
         return .success(executablePath)
       } else {
         return .failure(.invalidProvidedExecutablePath)
@@ -44,7 +44,7 @@ public enum ExecutablePath {
 
     for (name, path) in product(executableNames, searchPATHs) {
       let testPath = path.appending(name)
-      if FileSyscalls.check(.absolute(testPath), accessibility: .execute) {
+      if SystemCall.check(accessibility: .execute, for: testPath) {
         return .success(testPath.string)
       }
     }
