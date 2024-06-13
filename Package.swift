@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version: 5.7
 
 import PackageDescription
 
@@ -11,12 +11,10 @@ let package = Package(
     .library(name: "ExecutableDescription", targets: ["ExecutableDescription"]),
     .library(name: "ExecutableLauncher", targets: ["ExecutableLauncher"]),
     .library(name: "FPExecutableLauncher", targets: ["FPExecutableLauncher"]),
-    .library(name: "TSCExecutableLauncher", targets: ["TSCExecutableLauncher"]),
     .library(name: "PosixExecutableLauncher", targets: ["PosixExecutableLauncher"]),
     .library(name: "ExecutablePublisher", targets: ["ExecutablePublisher"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.3.0"),
     .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
     .package(url: "https://github.com/kojirou1994/SystemUp.git", from: "0.5.0"),
     .package(url: "https://github.com/kojirou1994/Escape.git", from: "0.0.1"),
@@ -40,12 +38,6 @@ let package = Package(
         "ExecutableLauncher",
       ]),
     .target(
-      name: "TSCExecutableLauncher",
-      dependencies: [
-        "ExecutableLauncher",
-        .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core"),
-      ]),
-    .target(
       name: "PosixExecutableLauncher",
       dependencies: [
         "ExecutableLauncher",
@@ -59,6 +51,6 @@ let package = Package(
       ]),
     .testTarget(
       name: "ExecutableTests",
-      dependencies: ["ExecutableLauncher", "TSCExecutableLauncher", "FPExecutableLauncher"]),
+      dependencies: ["ExecutableLauncher", "PosixExecutableLauncher", "FPExecutableLauncher"]),
   ]
 )

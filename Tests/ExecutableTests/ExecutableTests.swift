@@ -2,13 +2,13 @@ import XCTest
 import ExecutableDescription
 import ExecutableLauncher
 import FPExecutableLauncher
-import TSCExecutableLauncher
+import PosixExecutableLauncher
 
 final class ExecutableTests: XCTestCase {
   func testError() throws {
     do {
       let none = AnyExecutable(executableName: "abcdefg", arguments: [])
-      try none.launch(use: TSCExecutableLauncher(outputRedirection: .none))
+      try none.launch(use: PosixExecutableLauncher())
     } catch let error as ExecutableError {
       switch error {
       case .executableNotFound: break

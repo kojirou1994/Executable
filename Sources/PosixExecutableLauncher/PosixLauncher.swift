@@ -49,6 +49,21 @@ public struct PosixExecutableLauncher: ExecutableLauncher {
 
 }
 
+public extension ExecutableLauncher where Self == PosixExecutableLauncher {
+
+  @inlinable
+  static var posix: Self {
+    .init()
+  }
+
+  @inlinable
+  static func posix(stdin: Command.ChildIO = .inherit, stdout: Command.ChildIO = .inherit, stderr: Command.ChildIO = .inherit) -> Self {
+    .init(stdin: stdin, stdout: stdout, stderr: stderr)
+  }
+
+}
+
+
 public struct PosixPipelineLauncher {
   /// first process stdin
   public var firstStandardInput: Command.ChildIO
