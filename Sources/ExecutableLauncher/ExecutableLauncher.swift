@@ -9,7 +9,7 @@ public protocol ExecutableLauncher {
   func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> LaunchResult where T: Executable
 }
 
-public struct ExecutableLaunchOptions {
+public struct ExecutableLaunchOptions: Sendable {
   public let checkNonZeroExitCode: Bool
 
   public init(checkNonZeroExitCode: Bool = true) {
@@ -32,7 +32,7 @@ extension Executable {
 
   @inlinable
   @discardableResult
-  public func result<T: ExecutableLauncher>(use launcher: T,  options: ExecutableLaunchOptions = .init()) async throws -> T.LaunchResult {
+  public func result<T: ExecutableLauncher & Sendable>(use launcher: T,  options: ExecutableLaunchOptions = .init()) async throws -> T.LaunchResult where Self: Sendable {
     try await withUnsafeThrowingContinuation { continuation in
       try! PosixThread.detach {
         continuation.resume(with: Result.init(catching: {

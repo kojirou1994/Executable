@@ -6,7 +6,7 @@ public enum ExecutablePath {
 
   public typealias LookupMethod = (String) -> String?
 
-  public static var customLookup: LookupMethod?
+  nonisolated(unsafe) public static var customLookup: LookupMethod?
 
   @inlinable
   public static func lookup<E: Executable>(_ executable: E? = nil, type: E.Type = E.self, forcePATH: String? = nil) -> Result<String, ExecutableError> {

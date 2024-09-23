@@ -14,10 +14,10 @@ public struct ExecutableOutputOptions: OptionSet {
   public let rawValue: Int
   public init(rawValue: Int) { self.rawValue = rawValue }
   
-  public static let stdout    = Self(rawValue: 1 << 0)
-  public static let stderr    = Self(rawValue: 1 << 1)
-  
-  public static let all: Self = [.stdout, .stderr]
+  public static var stdout: Self { .init(rawValue: 1 << 0) }
+  public static var stderr: Self { .init(rawValue: 1 << 1) }
+
+  public static var all: Self { [.stdout, .stderr] }
 }
 
 @available(OSX 10.15, *)
@@ -56,13 +56,13 @@ public struct ExecutablePublisher<E: Executable>: Publisher {
     }
   }
   
-  public func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
+  public func receive<S: Sendable>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
     autoreleasepool {
       let process = try! executable.generateProcess(use: FPExecutableLauncher())
       let subscription = ProcessPublisherSubscription(process: process)
       
-      var catchedPipes = [Pipe]()
-      
+      nonisolated(unsafe) var catchedPipes = [Pipe]()
+
       if options.contains(.stderr) {
         let stderr = Pipe()
         process.standardError = stderr
