@@ -44,7 +44,7 @@ public enum ExecutablePath {
 
     for (name, path) in product(executableNames, searchPATHs) {
       let testPath = path.appending(name)
-      if SystemCall.check(accessibility: .execute, for: testPath) {
+      if testPath.withUnsafeCString({ SystemCall.check(accessibility: .execute, for: $0) }) {
         return .success(testPath.string)
       }
     }

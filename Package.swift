@@ -16,7 +16,7 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
-    .package(url: "https://github.com/kojirou1994/SystemUp.git", from: "0.5.0"),
+    .package(url: "https://github.com/kojirou1994/SystemUp.git", branch: "main"),
     .package(url: "https://github.com/kojirou1994/Escape.git", from: "0.0.1"),
   ],
   targets: [
