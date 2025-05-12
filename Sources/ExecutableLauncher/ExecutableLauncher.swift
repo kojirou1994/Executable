@@ -2,10 +2,8 @@
 import SystemUp
 
 public protocol ExecutableLauncher {
-  associatedtype Process
   associatedtype LaunchResult
 
-  func generateProcess<T>(for executable: T) throws -> Process where T: Executable
   func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> LaunchResult where T: Executable
 }
 
@@ -23,11 +21,6 @@ extension Executable {
   @discardableResult
   public func launch<T: ExecutableLauncher>(use launcher: T, options: ExecutableLaunchOptions = .init()) throws -> T.LaunchResult {
     try launcher.launch(executable: self, options: options)
-  }
-
-  @inlinable
-  public func generateProcess<T: ExecutableLauncher>(use launcher: T) throws -> T.Process {
-    try launcher.generateProcess(for: self)
   }
 
   @inlinable

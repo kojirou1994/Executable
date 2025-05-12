@@ -39,10 +39,8 @@ public struct PosixExecutableLauncher: ExecutableLauncher {
   public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> Command.Output where T : Executable {
     let command = try generateProcess(for: executable)
     let output = try command.output()
-    if options.checkNonZeroExitCode {
-      guard output.status.exited, output.status.exitStatus == 0 else {
-        throw ExecutableError.nonZeroExit
-      }
+    if options.checkNonZeroExitCode, !output.status.isSuccess {
+      throw ExecutableError.nonZeroExit
     }
     return output
   }

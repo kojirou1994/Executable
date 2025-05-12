@@ -57,9 +57,7 @@ public struct FPExecutableLauncher: ExecutableLauncher {
     return process
   }
 
-  public typealias Process = Foundation.Process
-
-  public struct LaunchResult {
+  public struct LaunchResult: Sendable {
     public let terminationStatus: Int32
     public let terminationReason: Process.TerminationReason
   }
