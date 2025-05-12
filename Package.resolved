@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kojirou1994/CUtility.git",
       "state" : {
-        "revision" : "572ce522849fb78830ac5fc904066ab7e5ceb04c",
-        "version" : "0.5.3"
+        "revision" : "dd0b6ad0b7460fda9480ce743af26c884b0dfe94",
+        "version" : "0.6.4"
       }
     },
     {
@@ -70,7 +70,7 @@
       "location" : "https://github.com/kojirou1994/SystemUp.git",
       "state" : {
         "branch" : "main",
-        "revision" : "e0ace5670e959d9c857dfefe3f9ab1b2d1f69abb"
+        "revision" : "03f91060b59174f8b4dd37ce210efd581fdaab66"
       }
     }
   ],
