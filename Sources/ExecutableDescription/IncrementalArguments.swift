@@ -3,7 +3,8 @@ public protocol IncrementalArguments {
 }
 
 extension IncrementalArguments where Self: Executable {
-  var arguments: [String] {
+  @inlinable
+  public var arguments: [String] {
     var builder = ArgumentsBuilder()
     self.writeArguments(to: &builder)
     return builder.arguments
