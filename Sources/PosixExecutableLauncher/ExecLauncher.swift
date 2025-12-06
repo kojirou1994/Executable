@@ -12,7 +12,7 @@ public struct ExecExecutableLauncher: ExecutableLauncher {
   public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> Never where T : Executable {
     let path = try ExecutablePath.lookup(executable).get()
     var args = CStringArray()
-    args.append(.copy(bytes: path))
+    args.append(try .copy(bytes: path))
     args.append(contentsOf: executable.arguments)
 
     try args.withUnsafeCArrayPointer { array in

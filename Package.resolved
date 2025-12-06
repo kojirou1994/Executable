@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kojirou1994/CUtility.git",
       "state" : {
-        "revision" : "dd0b6ad0b7460fda9480ce743af26c884b0dfe94",
-        "version" : "0.6.4"
+        "branch" : "main",
+        "revision" : "3b3e146f566602b3739d290967c4623bb883bba5"
       }
     },
     {
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "3c728a5eb731ea0d990291778c5bbe168613a4b4",
         "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "littlec",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kojirou1994/LittleC.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "861444dfe0bec375ae5395d97b4437fe419f9777"
       }
     },
     {
@@ -33,35 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-numerics.git",
       "state" : {
-        "revision" : "e0ec0f5f3af6f3e4d5e7a19d2af26b481acb6ba8",
-        "version" : "1.0.3"
-      }
-    },
-    {
-      "identity" : "swift-syntax",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
-      "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
-        "version" : "600.0.1"
-      }
-    },
-    {
-      "identity" : "swift-system",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-system.git",
-      "state" : {
-        "revision" : "a34201439c74b53f0fd71ef11741af7e7caf01e1",
-        "version" : "1.4.2"
-      }
-    },
-    {
-      "identity" : "syscallvalue",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kojirou1994/SyscallValue.git",
-      "state" : {
-        "revision" : "588d71ca35d5f8b707692059774d8516de1727f3",
-        "version" : "1.0.1"
+        "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
+        "version" : "1.1.1"
       }
     },
     {
@@ -70,7 +52,7 @@
       "location" : "https://github.com/kojirou1994/SystemUp.git",
       "state" : {
         "branch" : "main",
-        "revision" : "649f4a18caa980119b378a9b6a27acaf05fcf4f0"
+        "revision" : "bcf69629b850481466d9bd376be3c1c8888761eb"
       }
     }
   ],

@@ -1,5 +1,4 @@
 import Algorithms
-import SystemPackage
 import SystemUp
 import CUtility
 
@@ -41,12 +40,18 @@ public enum ExecutablePath {
       return .failure(.executableNotFound)
     }
 
-    let searchPATHs = path.lazy.split(separator: ":").map { FilePath(String($0)) }
+    let searchPATHs = path.split(separator: ":").map { path in
+      if path.last == "/" {
+        String(path)
+      } else {
+        path.appending("/")
+      }
+    }
 
     for (name, path) in product(executableNames, searchPATHs) {
       let testPath = path.appending(name)
-      if testPath.withUnsafeCString({ SystemCall.check(accessibility: .execute, for: $0) }) {
-        return .success(testPath.string)
+      if SystemCall.check(accessibility: .execute, for: testPath) {
+        return .success(testPath)
       }
     }
 
