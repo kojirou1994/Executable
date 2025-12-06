@@ -3,7 +3,7 @@ import SystemUp
 import Command
 
 extension Command {
-  public init(executable: some Executable) throws {
+  public init(executable: some Executable) throws(ExecutableError) {
     self.init(executable: try ExecutablePath.lookup(executable).get(), arguments: executable.arguments)
     searchPATH = false
     cwd = executable.changeWorkingDirectory
@@ -26,7 +26,7 @@ public struct PosixExecutableLauncher: ExecutableLauncher {
   public var stdout: Command.ChildIO
   public var stderr: Command.ChildIO
 
-  public func generateProcess<T>(for executable: T) throws -> Command where T : Executable {
+  public func generateProcess<T>(for executable: T) throws(ExecutableError) -> Command where T : Executable {
     var command = try Command(executable: executable)
     command.stdin = stdin
     command.stdout = stdout
@@ -35,9 +35,14 @@ public struct PosixExecutableLauncher: ExecutableLauncher {
     return command
   }
 
-  public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> Command.Output where T : Executable {
+  public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws(ExecutableError) -> Command.Output where T : Executable {
     let command = try generateProcess(for: executable)
-    let output = try command.output()
+    let output: Command.Output
+    do throws(Errno) {
+      output = try command.output()
+    } catch {
+      throw .exec(error)
+    }
     if options.checkNonZeroExitCode, !output.status.isSuccess {
       throw ExecutableError.nonZeroExit
     }
@@ -63,7 +68,7 @@ public extension ExecutableLauncher where Self == PosixExecutableLauncher {
 
 extension CommandChain {
 
-  public mutating func append<E: Executable>(_ newExecutable: E) throws {
+  public mutating func append<E: Executable>(_ newExecutable: E) throws(ExecutableError) {
     append(try Command(executable: newExecutable))
   }
 

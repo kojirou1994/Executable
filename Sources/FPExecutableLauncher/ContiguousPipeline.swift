@@ -1,3 +1,4 @@
+#if !$Embedded
 import Foundation
 import ExecutableDescription
 
@@ -62,3 +63,4 @@ public final class ContiguousPipeline {
     }
   }
 }
+#endif

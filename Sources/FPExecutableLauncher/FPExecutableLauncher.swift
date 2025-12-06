@@ -1,3 +1,4 @@
+#if !$Embedded
 import Foundation
 @_exported import ExecutableLauncher
 
@@ -17,9 +18,9 @@ public struct FPExecutableLauncher: ExecutableLauncher {
     self.standardError = standardError
   }
 
-  public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> LaunchResult where T : Executable {
+  public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws(ExecutableError) -> LaunchResult where T : Executable {
     let process = try generateProcess(for: executable)
-    try process.run()
+    try! process.run()
 
     while process.isRunning {
       Thread.sleep(forTimeInterval: 0.05)
@@ -31,7 +32,7 @@ public struct FPExecutableLauncher: ExecutableLauncher {
     return .init(terminationStatus: process.terminationStatus, terminationReason: process.terminationReason)
   }
 
-  public func generateProcess<T>(for executable: T) throws -> Process where T : Executable {
+  public func generateProcess<T>(for executable: T) throws(ExecutableError) -> Process where T : Executable {
     let process = Process()
 
     process.executableURL = try URL(fileURLWithPath: ExecutablePath.lookup(executable).get())
@@ -77,3 +78,4 @@ extension ExecutableLauncher where Self == FPExecutableLauncher {
   }
 
 }
+#endif

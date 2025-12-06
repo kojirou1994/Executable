@@ -1,3 +1,4 @@
+#if !$Embedded
 import Foundation
 
 // only work for Foundation framework
@@ -14,3 +15,4 @@ public enum ExecutableStandardStream {
     }
   }
 }
+#endif

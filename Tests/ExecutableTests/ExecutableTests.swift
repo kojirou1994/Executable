@@ -9,11 +9,12 @@ final class ExecutableTests: XCTestCase {
     do {
       let none = AnyExecutable(executableName: "abcdefg", arguments: [])
       try none.launch(use: PosixExecutableLauncher())
-    } catch let error as ExecutableError {
+    } catch let error {
       switch error {
       case .executableNotFound: break
       case .nonZeroExit: break
       case .invalidProvidedExecutablePath: break
+      case .exec: break
       }
     }
   }

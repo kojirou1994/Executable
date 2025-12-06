@@ -1,14 +1,8 @@
-import struct Foundation.URL
+import SystemUp
 
 public enum ExecutableError: Error {
   case executableNotFound
   case nonZeroExit
   case invalidProvidedExecutablePath
-}
-
-public extension ExecutableError {
-  @available(*, deprecated, renamed: "invalidExecutablePath")
-  static var invalidExecutableURL: Self {
-    .invalidProvidedExecutablePath
-  }
+  case exec(Errno)
 }

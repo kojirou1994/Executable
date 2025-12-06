@@ -9,24 +9,24 @@ public struct ExecExecutableLauncher: ExecutableLauncher {
     self.resetBlockedSignals = resetBlockedSignals
   }
 
-  public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws -> Never where T : Executable {
+  public func launch<T>(executable: T, options: ExecutableLaunchOptions) throws(ExecutableError) -> Never where T : Executable {
     let path = try ExecutablePath.lookup(executable).get()
     var args = CStringArray()
-    args.append(try .copy(bytes: path))
+    args.append(try! .copy(bytes: path))
     args.append(contentsOf: executable.arguments)
 
     try args.withUnsafeCArrayPointer { array in
       // for compiler no warning
-      Result {
+      Result<Never, Errno> { () throws(Errno) in
         if resetBlockedSignals {
-          try BlockedSignals.singleThreaded.restoreAfter {
+          try BlockedSignals.singleThreaded.restoreAfter { () throws(Errno) in
             try SystemCall.exec(path, argv: array, searchPATH: false)
           }
         } else {
           try SystemCall.exec(path, argv: array, searchPATH: false)
         }
       }
-    }.get()
+    }.mapError { ExecutableError.exec($0) }.get()
   }
 
 }

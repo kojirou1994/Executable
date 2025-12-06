@@ -40,16 +40,16 @@ public enum ExecutablePath {
       return .failure(.executableNotFound)
     }
 
-    let searchPATHs = path.split(separator: ":").map { path in
+    let searchPATHs: [String] = path.split(separator: ":").map { path in
       if path.last == "/" {
         String(path)
       } else {
-        path.appending("/")
+        path + "/"
       }
     }
 
     for (name, path) in product(executableNames, searchPATHs) {
-      let testPath = path.appending(name)
+      let testPath = path + name
       if SystemCall.check(accessibility: .execute, for: testPath) {
         return .success(testPath)
       }

@@ -1,4 +1,4 @@
-#if os(macOS)
+#if os(macOS) && !$Embedded
 import Foundation
 import Combine
 import FPExecutableLauncher
