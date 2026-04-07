@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kojirou1994/CUtility.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "3b3e146f566602b3739d290967c4623bb883bba5"
+        "revision" : "17371ede716e146d37e43764c4be50be0561f19b",
+        "version" : "0.8.3"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/kojirou1994/LittleC.git",
       "state" : {
         "branch" : "main",
-        "revision" : "861444dfe0bec375ae5395d97b4437fe419f9777"
+        "revision" : "1aeec5ef8785832971567c43edf2fdbe5a05547d"
       }
     },
     {
@@ -47,12 +47,21 @@
       }
     },
     {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system.git",
+      "state" : {
+        "revision" : "7c6ad0fc39d0763e0b699210e4124afd5041c5df",
+        "version" : "1.6.4"
+      }
+    },
+    {
       "identity" : "systemup",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kojirou1994/SystemUp.git",
       "state" : {
         "branch" : "main",
-        "revision" : "bcf69629b850481466d9bd376be3c1c8888761eb"
+        "revision" : "e531d208bb505da30511d3f7d3d7ea14bbd28d2b"
       }
     }
   ],

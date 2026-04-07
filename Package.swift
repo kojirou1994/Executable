@@ -1,11 +1,11 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.3
 
 import PackageDescription
 
 let package = Package(
   name: "Executable",
   platforms: [
-    .macOS(.v10_15),
+    .macOS(.v11),
   ],
   products: [
     .library(name: "ExecutableDescription", targets: ["ExecutableDescription"]),
